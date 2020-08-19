@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">HW81</string>
+    <string name="text_view_login">Login</string>
+    <string name="text_pasword">Pasword</string>
+    <string name="text_username">Username</string>
+    <string name="text_view_sign_up">Sign up</string>
+    <string name="text_toast_login_correct">Login success</string>
+    <string name="text_toast_login_incorrect">try again</string>
+</resources>
