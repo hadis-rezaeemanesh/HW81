@@ -2,11 +2,15 @@ package com.example.hw81;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import static com.example.hw81.MainActivity.EXTRA_PASSWORD;
+import static com.example.hw81.MainActivity.EXTRA_USER_NAME;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -24,17 +28,12 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        Intent startIntent = getIntent();
         findViews();
         setListeners();
-        if (savedInstanceState != null){
-            mSignUpPassword.setText(savedInstanceState.getInt(USER_NAME_SIGN_UP));
-            mSignUpPassword.setText(savedInstanceState.getInt(PASSWORD_SIGN_UP));
-        }
 
-        username = getIntent().getStringExtra(MainActivity.EXTRA_USER_NAME);
+        username = getIntent().getStringExtra(EXTRA_USER_NAME);
         mSignUpUsername.setText(username);
-        password = getIntent().getStringExtra(MainActivity.EXTRA_PASSWORD);
+        password = getIntent().getStringExtra(EXTRA_PASSWORD);
         mSignUpPassword.setText(password);
     }
 
@@ -48,9 +47,11 @@ public class SignupActivity extends AppCompatActivity {
         mButtonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SignupActivity.this, MainActivity.class);
-                startActivityForResult(intent, 1);
-
+                Intent intent = new Intent();
+                intent.putExtra(EXTRA_USER_NAME, String.valueOf(mSignUpUsername.getText()));
+                intent.putExtra(EXTRA_PASSWORD, String.valueOf(mSignUpPassword.getText()));
+                setResult(Activity.RESULT_OK, intent);
+                finish();
             }
         });
     }

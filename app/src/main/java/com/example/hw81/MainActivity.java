@@ -1,8 +1,10 @@
 package com.example.hw81;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -20,68 +22,85 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String EXTRA_USER_NAME = "userName";
     public static final String EXTRA_PASSWORD = "password";
+    public static final int REQUEST_CODE_SIGN_UP = 0;
+    public static final String BUNDLE_KEY_PASSWORD = "password";
+    public static final String BUNDLE_KEY_USER_NAME = "userName";
     private EditText mEditTextUsername;
     private EditText mEditTextPassword;
     private Button mLoginButton;
     private Button mSignUpButton;
-    String username;
-    String password;
-    private ViewGroup mView;
+    private String username;
+    private String password;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         findViews();
+
+        if (savedInstanceState != null){
+            username = savedInstanceState.getString(EXTRA_USER_NAME);
+            password = savedInstanceState.getString(EXTRA_PASSWORD);
+        }
         setListeners();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(BUNDLE_KEY_USER_NAME, username);
+        outState.putString(BUNDLE_KEY_PASSWORD, password);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode== Activity.RESULT_CANCELED || data==null)
+            return;
+        username=data.getStringExtra(EXTRA_USER_NAME);
+        password = data.getStringExtra(EXTRA_PASSWORD);
+
     }
 
-    private void findViews(){
+    private void findViews() {
         mEditTextUsername = findViewById(R.id.input_username);
         mEditTextPassword = findViewById(R.id.input_pasword);
         mLoginButton = findViewById(R.id.btn_login);
         mSignUpButton = findViewById(R.id.btn_sign_up);
     }
 
-    private void setListeners(){
-      mLoginButton.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View view) {
-              String usr = mEditTextUsername.getText().toString();
-              String pas = mEditTextPassword.getText().toString();
-              if (usr == username && pas == password ){
-                   Snackbar.make(mView, "Login", Snackbar.LENGTH_LONG ).show();
-              }else {
-                  Snackbar.make(mView, "Username or Password is incorrect",Snackbar.LENGTH_LONG )
-                          .show();
-              }
+    private void setListeners() {
+        mLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String usr = mEditTextUsername.getText().toString();
+                String pas = mEditTextPassword.getText().toString();
+                if (usr .equals(username)  && pas .equals(password) ) {
+                    Snackbar.make(findViewById(R.id.container), "Login", Snackbar.LENGTH_LONG).show();
+                } else {
+                    Snackbar.make(findViewById(R.id.container), "Username or Password is incorrect", Snackbar.LENGTH_LONG)
+                            .show();
+                }
 
-          }
-      });
+            }
+        });
 
-      mSignUpButton.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View view) {
-              Intent intent = new Intent(MainActivity.this, SignupActivity.class);
-              intent.putExtra(EXTRA_USER_NAME, username );
-              intent.putExtra(EXTRA_PASSWORD, password);
-              startActivityForResult(intent, 0);
-          }
-      });
+        mSignUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SignupActivity.class);
+                intent.putExtra(EXTRA_USER_NAME, String.valueOf(mEditTextUsername.getText()));
+                intent.putExtra(EXTRA_PASSWORD, String.valueOf(mEditTextPassword.getText()));
+                startActivityForResult(intent, REQUEST_CODE_SIGN_UP);
+            }
+        });
     }
 
-    private boolean isEmpty(EditText text){
+    private boolean isEmpty(EditText text) {
         CharSequence str = text.getText().toString();
         return TextUtils.isEmpty(str);
     }
-
 
 
 }
