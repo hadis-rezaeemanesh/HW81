@@ -22,13 +22,15 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String EXTRA_USER_NAME = "userName";
     public static final String EXTRA_PASSWORD = "password";
-    public static final int REQUEST_CODE_SIGN_UP = 0;
-    public static final String BUNDLE_KEY_PASSWORD = "password";
-    public static final String BUNDLE_KEY_USER_NAME = "userName";
+    private static final int REQUEST_CODE_SIGN_UP = 0;
+    private static final String BUNDLE_KEY_PASSWORD = "password";
+    private static final String BUNDLE_KEY_USER_NAME = "userName";
+
     private EditText mEditTextUsername;
     private EditText mEditTextPassword;
     private Button mLoginButton;
     private Button mSignUpButton;
+
     private String username;
     private String password;
 
@@ -56,16 +58,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (resultCode== Activity.RESULT_CANCELED || data==null)
             return;
-        username=data.getStringExtra(EXTRA_USER_NAME);
-        password = data.getStringExtra(EXTRA_PASSWORD);
+        if (requestCode == REQUEST_CODE_SIGN_UP) {
+            password = data.getStringExtra(EXTRA_PASSWORD);
+            username = data.getStringExtra(EXTRA_USER_NAME);
+            mEditTextUsername.setText(username );
+            mEditTextPassword.setText(password);
+        }
 
     }
 
     private void findViews() {
         mEditTextUsername = findViewById(R.id.input_username);
-        mEditTextPassword = findViewById(R.id.input_pasword);
+        mEditTextPassword = findViewById(R.id.input_password);
         mLoginButton = findViewById(R.id.btn_login);
         mSignUpButton = findViewById(R.id.btn_sign_up);
     }
@@ -95,11 +102,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_CODE_SIGN_UP);
             }
         });
-    }
-
-    private boolean isEmpty(EditText text) {
-        CharSequence str = text.getText().toString();
-        return TextUtils.isEmpty(str);
     }
 
 
